@@ -1,0 +1,6 @@
+README.TXT
+*.class
+*.ctxt
+archive/
+doc/
+package.bluej
