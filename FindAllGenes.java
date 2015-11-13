@@ -1,4 +1,3 @@
-
 /**
  * 
  * Find all genes in a DNA string.
@@ -6,6 +5,9 @@
  * @author greg 
  * @version 1.0
  */
+import edu.duke.*;
+import java.io.*;
+
 public class FindAllGenes {
     public int findStopIndex(String dna, int index) {
         //Write the method findStopIndex that has two parameters dna and index, where dna is a String of 
@@ -58,6 +60,62 @@ public class FindAllGenes {
         }
         
     }
+    public StorageResource storeAll(String dna) {
+        StorageResource store = new StorageResource();
+        
+        String dnaLower = dna.toLowerCase();
+        int marker = 0;
+        while (true) {
+            int startCodon = dnaLower.indexOf("atg", marker);
+            if (startCodon == -1) {
+                break;
+            }
+            int stopCodon = findStopIndex(dnaLower,startCodon+3);
+            if (stopCodon == -1) {
+                marker = startCodon + 3;
+            }
+            else {
+                store.add(dna.substring(startCodon,stopCodon+3));
+                marker = stopCodon + 3;
+            }
+        }
+        return store;
+    }
+    public float cgRatio(String dna) {
+        String dnaLower = dna.toLowerCase();
+        int marker = 0;
+        int cgSum = 0;
+        while (true) {
+            if (dnaLower.indexOf("c", marker) == -1 && dnaLower.indexOf("g", marker) == -1) {
+                break;
+            }
+            if (dnaLower.indexOf("c", marker) != -1) {
+                cgSum = cgSum + 1;
+                marker = (dnaLower.indexOf("c", marker) + 1);
+            }
+            else if (dnaLower.indexOf("g", marker) != -1) {
+                cgSum = cgSum + 1;
+                marker = (dnaLower.indexOf("g", marker) + 1);
+            }
+        }
+        return (float)cgSum/dna.length();
+    }
+    public void printGenes(StorageResource sr) {
+        int overSixtyCount = 0;
+        int cgRatioCount = 0;
+        for (String item : sr.data()) {
+            if (item.length() > 60) {
+                System.out.println(item);
+                overSixtyCount = overSixtyCount + 1;
+            }
+            if (cgRatio(item) > 0.35) {
+                System.out.println(item);
+                cgRatioCount = cgRatioCount + 1;
+            }
+        }
+        System.out.println("Number of strings over 60 chars: " + overSixtyCount);
+        System.out.println("Number of strings whose C-G ratio is higher than 0.35: " + cgRatioCount);
+    }
     public void testFinder() {
         //test method that prints full DNA strings set within this method and prints genes found in the strings
         String dna1 = "ATGAAATGAAAA";
@@ -66,5 +124,11 @@ public class FindAllGenes {
         printAll(dna1);
         printAll(dna2);
         printAll(dna3);
+    }
+    public void testStorageFinder() {
+        FileResource file = new FileResource("brca1line.fa");
+        StorageResource results = storeAll(file.asString());
+        System.out.println("Number of genes found: " + results.size());
+        printGenes(results);
     }
 }
