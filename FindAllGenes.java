@@ -40,15 +40,16 @@ public class FindAllGenes {
         System.out.println(dna);
         System.out.println("Gene(s) found:");
         
+        String dnaLower = dna.toLowerCase();
         int marker = 0;
-        while (marker < dna.length()) {
-            int startCodon = dna.indexOf("atg", marker);
+        while (true) {
+            int startCodon = dnaLower.indexOf("atg", marker);
             if (startCodon == -1) {
                 break;
             }
-            int stopCodon = findStopIndex(dna.substring(marker),marker);
+            int stopCodon = findStopIndex(dnaLower,startCodon+3);
             if (stopCodon == -1) {
-                break;
+                marker = startCodon + 3;
             }
             else {
                 System.out.println(dna.substring(startCodon,stopCodon+3));
