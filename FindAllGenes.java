@@ -1,6 +1,5 @@
 /**
- * 
- * Find all genes in a DNA string.
+ * Find all genes in a DNA string...and a bunch of other stuff
  * 
  * @author greg 
  * @version 1.0
@@ -10,11 +9,6 @@ import java.io.*;
 
 public class FindAllGenes {
     public int findStopIndex(String dna, int index) {
-        //Write the method findStopIndex that has two parameters dna and index, where dna is a String of 
-        //DNA and index is a position in the string. This method finds the first occurrence of each stop 
-        //codon to the right of index. From those stop codons that are a multiple of three from index, it 
-        //returns the smallest index position. It should return -1 if no stop codon was found and there 
-        //is no such position. This method was discussed in one of the videos.
         int stop1 = dna.indexOf("tag", index);
         if (stop1 == -1 || (stop1 - index) % 3 != 0) {
             stop1 = dna.length();
@@ -35,9 +29,6 @@ public class FindAllGenes {
         }
     }
     public void printAll(String dna) {
-        //this method should print all the genes it finds in DNA
-        //look repeatedly for a gene; if a gene is found, then print it and continue looking for another gene
-        //this method should call findStopIndex
         System.out.println("DNA string is:");
         System.out.println(dna);
         System.out.println("Gene(s) found:");
@@ -85,31 +76,48 @@ public class FindAllGenes {
         String dnaLower = dna.toLowerCase();
         int marker = 0;
         int cgSum = 0;
-        while (true) {
-            if (dnaLower.indexOf("c", marker) == -1 && dnaLower.indexOf("g", marker) == -1) {
-                break;
-            }
-            if (dnaLower.indexOf("c", marker) != -1) {
-                cgSum = cgSum + 1;
-                marker = (dnaLower.indexOf("c", marker) + 1);
-            }
-            else if (dnaLower.indexOf("g", marker) != -1) {
-                cgSum = cgSum + 1;
-                marker = (dnaLower.indexOf("g", marker) + 1);
-            }
+        while (dnaLower.indexOf("c", marker) != -1) {
+            //this stops at c and doesn't get the g totals
+            //so maybe two loops are needed here, one for c and another for g
+            cgSum = cgSum + 1;
+            marker = (dnaLower.indexOf("c", marker) + 1);
+        }
+        marker = 0;
+        while (dnaLower.indexOf("g", marker) != -1) {
+            cgSum = cgSum + 1;
+            marker = (dnaLower.indexOf("g", marker) + 1);
         }
         return (float)cgSum/dna.length();
+    }
+    public int ctgFinder(String dna) {
+        String dnaLower = dna.toLowerCase();
+        int marker = 0;
+        int ctgSum = 0;
+        while (dnaLower.indexOf("ctg",marker) != -1) {
+            ctgSum = ctgSum + 1;
+            marker = (dnaLower.indexOf("ctg",marker) + 3);
+        }
+        return ctgSum;
+    }
+    public int longestGene(StorageResource sr) {
+        int longest = 0;
+        for (String item : sr.data()) {
+            if (item.length() > longest) {
+                longest = item.length();
+            }
+        }
+        return longest;
     }
     public void printGenes(StorageResource sr) {
         int overSixtyCount = 0;
         int cgRatioCount = 0;
         for (String item : sr.data()) {
             if (item.length() > 60) {
-                System.out.println(item);
+                //System.out.println(item);
                 overSixtyCount = overSixtyCount + 1;
             }
             if (cgRatio(item) > 0.35) {
-                System.out.println(item);
+                //System.out.println(item);
                 cgRatioCount = cgRatioCount + 1;
             }
         }
@@ -117,13 +125,15 @@ public class FindAllGenes {
         System.out.println("Number of strings whose C-G ratio is higher than 0.35: " + cgRatioCount);
     }
     public void testFinder() {
-        //test method that prints full DNA strings set within this method and prints genes found in the strings
         String dna1 = "ATGAAATGAAAA";
         String dna2 = "ccatgccctaataaatgtctgtaatgtaga";
         String dna3 = "CATGTAATAGATGAATGACTGATAGATATGCTTGTATGCTATGAAAATGTGAAATGACCCA";
-        printAll(dna1);
-        printAll(dna2);
-        printAll(dna3);
+        String dna4 = "ATGAATTAGTAACTGATGAATTAACTGAATTCTGGGGGGGCTGATGCTG";
+        //printAll(dna1);
+        //printAll(dna2);
+        //printAll(dna3);
+        System.out.println(dna4);
+        System.out.println("Number of instances of CTG: " + ctgFinder(dna4));
     }
     public void testStorageFinder() {
         FileResource file = new FileResource("brca1line.fa");
