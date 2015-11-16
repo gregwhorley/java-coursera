@@ -136,9 +136,13 @@ public class FindAllGenes {
         System.out.println("Number of instances of CTG: " + ctgFinder(dna4));
     }
     public void testStorageFinder() {
-        FileResource file = new FileResource("brca1line.fa");
+        //FileResource file = new FileResource("brca1line.fa");
+        FileResource file = new FileResource("GRch38dnapart.fa");
         StorageResource results = storeAll(file.asString());
+        String ctgs = file.asString();
         System.out.println("Number of genes found: " + results.size());
         printGenes(results);
+        System.out.println("Number of CTGs: " + ctgFinder(ctgs));
+        System.out.println("Longest gene size: " + longestGene(results));
     }
 }

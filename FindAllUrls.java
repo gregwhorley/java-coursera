@@ -13,10 +13,15 @@ public class FindAllUrls {
         URLResource grabber = new URLResource(url);
         StorageResource store = new StorageResource();
         for (String line : grabber.lines()) {
-            if (line.contains("http")) {
-               int startPos = line.indexOf("http");
-               int endPos = line.indexOf("\"",line.indexOf("http"));
-               store.add(line.substring(startPos,endPos));
+            String lineLower = line.toLowerCase();
+            int startPos = 0;
+            int endPos = 0;
+            int marker = 0;
+            while (lineLower.indexOf("href=\"http", marker) != -1) {
+                  startPos = lineLower.indexOf("http",marker);
+                  endPos = lineLower.indexOf("\"",startPos);
+                  store.add(line.substring(startPos,endPos));
+                  marker = endPos + 1;
             }
         }
         return store;
@@ -29,7 +34,8 @@ public class FindAllUrls {
         }
     }
     public void testURLWithStorage() {
-        StorageResource printUrl = findURLs("http://www.dukelearntoprogram.com/course2/data/manylinks.html");
+        //StorageResource printUrl = findURLs("http://www.dukelearntoprogram.com/course2/data/manylinks.html");
+        StorageResource printUrl = findURLs("http://www.dukelearntoprogram.com/course2/data/newyorktimes.html");
         int httpsLinks = 0;
         int dotComs = 0;
         int endComs = 0;
