@@ -88,4 +88,7 @@ public class WhichCountriesExport {
             }
         }
     }
+    public void main(String args[]) {
+        tester();
+    }
 }
