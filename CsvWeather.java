@@ -115,4 +115,30 @@ public class CsvWeather {
         CSVRecord lowestHumidity = lowestHumidityInManyFiles();
         System.out.println("Lowest Humidity was " + lowestHumidity.get("Humidity") + " at " + lowestHumidity.get("DateUTC"));
     }
+    public double averageTemperatureInFile(CSVParser parser) {
+        double averageTemperature = 0.0;
+        int numberOfLines = 0;
+        for (CSVRecord currentRow : parser) {
+             double currentRowTemp = Double.parseDouble(currentRow.get("TemperatureF"));
+             averageTemperature = averageTemperature + currentRowTemp;
+             numberOfLines = numberOfLines + 1;
+        }
+        averageTemperature = averageTemperature / numberOfLines;
+        return averageTemperature;
+    }
+    public void testAverageTemperatureInFile() {
+        FileResource fr = new FileResource();
+        CSVParser parser = fr.getCSVParser();
+        double avgTemp = averageTemperatureInFile(parser);
+        System.out.println("Average temperature in file is " + avgTemp);
+    }
+    public double averageTemperatureWithHighHumidityInFile(CSVParser parser, int value) {
+        double result = 0.0;
+        for (CSVRecord currentRow : parser) {
+            if (! currentRow.get("Humidity").equals("N/A") && Integer.parseInt(currentRow.get("Humidity")) >= value) {
+                double currentRowTemp = Double.parseDouble(currentRow.get("TemperatureF"));
+            }
+        }
+        return result;
+    }
 }
