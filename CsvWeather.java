@@ -134,11 +134,15 @@ public class CsvWeather {
     }
     public double averageTemperatureWithHighHumidityInFile(CSVParser parser, int value) {
         double result = 0.0;
+        int numberOfRecordedTemps = 0;
         for (CSVRecord currentRow : parser) {
             if (! currentRow.get("Humidity").equals("N/A") && Integer.parseInt(currentRow.get("Humidity")) >= value) {
                 double currentRowTemp = Double.parseDouble(currentRow.get("TemperatureF"));
+                result = result + currentRowTemp;
+                numberOfRecordedTemps = numberOfRecordedTemps + 1;
             }
         }
+        result = result / numberOfRecordedTemps;
         return result;
     }
 }
