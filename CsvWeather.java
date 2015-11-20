@@ -73,4 +73,46 @@ public class CsvWeather {
             System.out.println(current.get("DateUTC") + ": " + current.get("TemperatureF"));
         }
     }
+    public CSVRecord lowestHumidityInFile(CSVParser parser) {
+        CSVRecord lowestHumidityRow = null;
+        for (CSVRecord currentRow : parser) {
+            lowestHumidityRow = getLowestHumidityOfTwo(currentRow,lowestHumidityRow);
+        }
+        return lowestHumidityRow;
+    }
+    public void testLowestHumidityInFile() {
+        FileResource fr = new FileResource();
+        CSVParser parser = fr.getCSVParser();
+        CSVRecord csv = lowestHumidityInFile(parser);
+        System.out.println("Lowest Humidity was " + csv.get("Humidity") + " at " + csv.get("DateUTC"));
+    }
+    public CSVRecord getLowestHumidityOfTwo(CSVRecord currentRow, CSVRecord lowestHumidityRow) {
+        if (lowestHumidityRow == null) {
+                lowestHumidityRow = currentRow;
+            }
+            else {
+               if (! currentRow.get("Humidity").equals("N/A")) {
+                  int currentHumidity = Integer.parseInt(currentRow.get("Humidity"));
+                  int lowHumidity = Integer.parseInt(lowestHumidityRow.get("Humidity"));
+                  if (currentHumidity < lowHumidity) {
+                      lowestHumidityRow = currentRow;
+                    }
+               }
+            }
+        return lowestHumidityRow;
+    }
+    public CSVRecord lowestHumidityInManyFiles() {
+        DirectoryResource dr = new DirectoryResource();
+        CSVRecord smallestRecord = null;
+        for (File file : dr.selectedFiles()) {
+            FileResource fr = new FileResource(file);
+            CSVRecord currentRow = lowestHumidityInFile(fr.getCSVParser());
+            smallestRecord = getLowestHumidityOfTwo(currentRow,smallestRecord);
+        }
+        return smallestRecord;
+    }
+    public void testLowestHumidityInManyFiles() {
+        CSVRecord lowestHumidity = lowestHumidityInManyFiles();
+        System.out.println("Lowest Humidity was " + lowestHumidity.get("Humidity") + " at " + lowestHumidity.get("DateUTC"));
+    }
 }
