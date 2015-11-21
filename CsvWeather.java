@@ -36,9 +36,9 @@ public class CsvWeather {
         return smallestSoFar;
     }
     public void testColdestHourInFile() {
-        FileResource fr = new FileResource("nc_weather/2012/weather-2012-01-01.csv");
+        FileResource fr = new FileResource();
         CSVRecord smallest = coldestHourInFile(fr.getCSVParser());
-        System.out.println("Coldest temp was " + smallest.get("TemperatureF") + " at " + smallest.get("TimeEST"));
+        System.out.println("Coldest temp was " + smallest.get("TemperatureF") + " at " + smallest.get("DateUTC"));
     }
     public String fileWithColdestTemperature() {
         //get a list of files
@@ -121,7 +121,7 @@ public class CsvWeather {
         for (CSVRecord currentRow : parser) {
              double currentRowTemp = Double.parseDouble(currentRow.get("TemperatureF"));
              averageTemperature = averageTemperature + currentRowTemp;
-             numberOfLines = numberOfLines + 1;
+             numberOfLines += 1;
         }
         averageTemperature = averageTemperature / numberOfLines;
         return averageTemperature;
@@ -138,11 +138,23 @@ public class CsvWeather {
         for (CSVRecord currentRow : parser) {
             if (! currentRow.get("Humidity").equals("N/A") && Integer.parseInt(currentRow.get("Humidity")) >= value) {
                 double currentRowTemp = Double.parseDouble(currentRow.get("TemperatureF"));
-                result = result + currentRowTemp;
-                numberOfRecordedTemps = numberOfRecordedTemps + 1;
+                result += currentRowTemp;
+                numberOfRecordedTemps += 1;
             }
         }
         result = result / numberOfRecordedTemps;
         return result;
+    }
+    public void testAverageTemperatureWithHighHumidityInFile() {
+        FileResource fr = new FileResource();
+        CSVParser parser = fr.getCSVParser();
+        int value = 80;
+        double avgTemp = averageTemperatureWithHighHumidityInFile(parser, value);
+        if (Double.isNaN(avgTemp)) {
+            System.out.println("No temperatures with that humidity");
+        }
+        else {
+            System.out.println("Average Temp when high Humidity is " + avgTemp);
+        }
     }
 }
