@@ -113,15 +113,13 @@ public class MiniProjectForBabies {
         CSVParser parser = getParserFromFile(year);
         long maleRankingBoundary = getMaleRankingBoundary(parser);
         parser = getParserFromFile(year);
+        //Reassign rank to line number for Male names if gender is "M"
+        if (gender.equals("M")) {
+            rank += maleRankingBoundary;
+        }
         for (CSVRecord currentRow : parser) {
             //I have to iterate through every line until either Female or Male rank matches
-            //Female ranks are parser.getCurrentLineNumber()
             if (parser.getCurrentLineNumber() == rank && currentRow.get(1).equals(gender)) {
-                result = currentRow.get(0);
-                break;
-            }
-            //Male ranks are line number - (line number of last instance of F)
-            else if ((parser.getCurrentLineNumber() - maleRankingBoundary) == rank && currentRow.get(1).equals(gender)) {
                 result = currentRow.get(0);
                 break;
             }
