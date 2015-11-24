@@ -46,43 +46,43 @@ public class MiniProjectForBabies {
         FileResource fr = new FileResource();
         totalBirths(fr);
     }
+    public CSVParser getParserFromFile(int year) {
+        FileResource fr = new FileResource("us_babynames_test/yob" + year + ".csv");
+        CSVParser parser = fr.getCSVParser(false);
+        return parser;
+    }
+    public long getMaleRankingBoundary(CSVParser parser) {
+        long result = 0;
+        boolean maleRankFound = false;
+        for (CSVRecord currentRow : parser) {
+            if (currentRow.get(1).equals("M") && maleRankFound == false) {
+                result = (parser.getCurrentLineNumber() - 1);
+                maleRankFound = true;
+            }
+        }
+        return result;
+    }
     public long getRank(int year, String name, String gender) {
         //This method returns the 'rank' of the name in the file for the given gender, where rank 1 is the
         //name with the largest number of births. Names not found return -1.
         //CSV files are structured by highest-to-lowest number of female names followed by 
         //highest-to-lowest number of male names
         long result = 0;
-        FileResource fileResource = new FileResource("data/yob" + year + ".csv");
-        CSVParser parser = fileResource.getCSVParser(false);
-        long maleRankingBoundary = 0;
-        boolean maleRankFound = false;
-        //For each row of the CSV
+        CSVParser parser = getParserFromFile(year);
+        long maleRankingBoundary = getMaleRankingBoundary(parser);
+        parser = getParserFromFile(year);
         for (CSVRecord currentRow : parser) {
-           //If gender is M and it is the first M row
-           if (currentRow.get(1).equals("M") && maleRankFound == false) {
-              //(Current line - 1) is boundary for male ranking
-              maleRankingBoundary = (parser.getCurrentLineNumber() - 1);
-              maleRankFound = true;
-           }
            //Are the Name and Gender fields the same as what's specified?
            if (currentRow.get(0).equals(name) && currentRow.get(1).equals(gender)) {
-              //If gender specified as F
-              if (gender.equals("F")) {
-                 //Rank is whatever the line number is
-                 result = parser.getCurrentLineNumber();
-                 //Break out of loop
-                 break;
-              }
-              //If gender specified as M
-              else {
-                 //Rank is line number - (line number of last instance of F)
-                 result = parser.getCurrentLineNumber() - maleRankingBoundary;
-                 break;
-              }
+              result = parser.getCurrentLineNumber();
+              break;
            }
         }
-        if ( result == 0 ) {
+        if (result == 0) {
             result = -1;
+        }
+        else if (gender.equals("M")) {
+            result -= maleRankingBoundary;
         }
         return result;
     }
@@ -100,11 +100,54 @@ public class MiniProjectForBabies {
         name = "Ava";
         gender = "M";
         System.out.println(name + "/" + gender + " ranked " + getRank(year, name, gender) + " in " + year);
-        name = "Liam";
-        gender = "F";
-        System.out.println(name + "/" + gender + " ranked " + getRank(year, name, gender) + " in " + year);
         name = "Mason";
         gender = "M";
         System.out.println(name + "/" + gender + " ranked " + getRank(year, name, gender) + " in " + year);
+    }
+    public String getName(int year, int rank, String gender) {
+        //Returns the name of the person in the file at specified rank and gender. 
+        //If rank does not exist in the file, then "NO NAME" is returned. CSV files 
+        //are structured by female names in descending order of number of births followed
+        //by male names in descending order
+        String result = "";
+        CSVParser parser = getParserFromFile(year);
+        long maleRankingBoundary = getMaleRankingBoundary(parser);
+        parser = getParserFromFile(year);
+        for (CSVRecord currentRow : parser) {
+            //I have to iterate through every line until either Female or Male rank matches
+            //Female ranks are parser.getCurrentLineNumber()
+            if (parser.getCurrentLineNumber() == rank && currentRow.get(1).equals(gender)) {
+                result = currentRow.get(0);
+                break;
+            }
+            //Male ranks are line number - (line number of last instance of F)
+            else if ((parser.getCurrentLineNumber() - maleRankingBoundary) == rank && currentRow.get(1).equals(gender)) {
+                result = currentRow.get(0);
+                break;
+            }
+        }
+        if (result.equals("")) {
+            result = "NO NAME";
+        }
+        return result;
+    }
+    public void testGetName() {
+        int year = 2016;
+        int rank = 1;
+        String gender = "F";
+        System.out.println("Rank " + rank + " for gender " + gender + " in year " 
+                           + year + " is name: " + getName(year,rank,gender));
+        gender = "M";
+        System.out.println("Rank " + rank + " for gender " + gender + " in year " 
+                           + year + " is name: " + getName(year,rank,gender));
+        rank = 3;
+        System.out.println("Rank " + rank + " for gender " + gender + " in year " 
+                           + year + " is name: " + getName(year,rank,gender));
+        rank = 69;
+        System.out.println("Rank " + rank + " for gender " + gender + " in year " 
+                           + year + " is name: " + getName(year,rank,gender));
+    }
+    public void whatIsNameInYear(String name, int year, int newYear, String gender) {
+        
     }
 }
