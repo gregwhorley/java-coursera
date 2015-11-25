@@ -62,12 +62,12 @@ public class MiniProjectForBabies {
         }
         return result;
     }
-    public long getRank(int year, String name, String gender) {
+    public int getRank(int year, String name, String gender) {
         //This method returns the 'rank' of the name in the file for the given gender, where rank 1 is the
         //name with the largest number of births. Names not found return -1.
         //CSV files are structured by highest-to-lowest number of female names followed by 
         //highest-to-lowest number of male names
-        long result = 0;
+        Long result = 0L;
         CSVParser maleRankParser = getParserFromFile(year);
         long maleRankingBoundary = getMaleRankingBoundary(maleRankParser);
         CSVParser parser = getParserFromFile(year);
@@ -79,12 +79,12 @@ public class MiniProjectForBabies {
            }
         }
         if (result == 0) {
-            result = -1;
+            result = -1L;
         }
         else if (gender.equals("M")) {
             result -= maleRankingBoundary;
         }
-        return result;
+        return result.intValue();
     }
     public void testGetRank() {
         int year = 2016;
@@ -151,12 +151,30 @@ public class MiniProjectForBabies {
         //and same gender
         
         //Given a name and a year, I can use getRank() to get rank for their birth year
-        Long ranking = getRank(year,name,gender);
-        int rankInt = ranking.intValue();
+        int ranking = getRank(year,name,gender);
         
         //Given a rank and a year, I can use getName() to get same-ranked name for newYear
-        String rankedName = getName(newYear,rankInt,gender);
+        String rankedName = getName(newYear,ranking,gender);
         
         System.out.println(name + " born in " + year + " would be named " + rankedName + " if they were born in " + newYear);
+    }
+    public void testWhatIsNameInYear() {
+        String name = "Isabella";
+        int year = 2012;
+        int newYear = 2014;
+        String gender = "F";
+        
+        whatIsNameInYear(name, year, newYear, gender);
+    }
+    public int yearOfHighestRank(String name, String gender) {
+        //This method selects a range of files to process and returns an integer, the year
+        //with the highest rank for the name and gender. If the name and gender are not in any
+        //of the selected files, it should return -1.
+        
+        DirectoryResource directoryResource = new DirectoryResource();
+        int result = 0;
+        //I could call getRank() but I need to pass a year to the method and all I have are
+        //name and gender. Parsing the year out of the filename would be worth trying.
+        return result;
     }
 }
