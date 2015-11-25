@@ -68,9 +68,9 @@ public class MiniProjectForBabies {
         //CSV files are structured by highest-to-lowest number of female names followed by 
         //highest-to-lowest number of male names
         long result = 0;
+        CSVParser maleRankParser = getParserFromFile(year);
+        long maleRankingBoundary = getMaleRankingBoundary(maleRankParser);
         CSVParser parser = getParserFromFile(year);
-        long maleRankingBoundary = getMaleRankingBoundary(parser);
-        parser = getParserFromFile(year);
         for (CSVRecord currentRow : parser) {
            //Are the Name and Gender fields the same as what's specified?
            if (currentRow.get(0).equals(name) && currentRow.get(1).equals(gender)) {
@@ -110,15 +110,14 @@ public class MiniProjectForBabies {
         //are structured by female names in descending order of number of births followed
         //by male names in descending order
         String result = "";
+        CSVParser maleRankParser = getParserFromFile(year);
+        long maleRankingBoundary = getMaleRankingBoundary(maleRankParser);
         CSVParser parser = getParserFromFile(year);
-        long maleRankingBoundary = getMaleRankingBoundary(parser);
-        parser = getParserFromFile(year);
         //Reassign rank to line number for Male names if gender is "M"
         if (gender.equals("M")) {
             rank += maleRankingBoundary;
         }
         for (CSVRecord currentRow : parser) {
-            //I have to iterate through every line until either Female or Male rank matches
             if (parser.getCurrentLineNumber() == rank && currentRow.get(1).equals(gender)) {
                 result = currentRow.get(0);
                 break;
@@ -146,6 +145,18 @@ public class MiniProjectForBabies {
                            + year + " is name: " + getName(year,rank,gender));
     }
     public void whatIsNameInYear(String name, int year, int newYear, String gender) {
+        //Determines what name would have been named if they were born in a different year,
+        //based on the same popularity. You should determine the rank of name in the year
+        //they were born, and then print the name born in newYear that is at the same rank
+        //and same gender
         
+        //Given a name and a year, I can use getRank() to get rank for their birth year
+        Long ranking = getRank(year,name,gender);
+        int rankInt = ranking.intValue();
+        
+        //Given a rank and a year, I can use getName() to get same-ranked name for newYear
+        String rankedName = getName(newYear,rankInt,gender);
+        
+        System.out.println(name + " born in " + year + " would be named " + rankedName + " if they were born in " + newYear);
     }
 }
