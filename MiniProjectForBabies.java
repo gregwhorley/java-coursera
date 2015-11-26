@@ -7,6 +7,7 @@
  */
 import edu.duke.*;
 import org.apache.commons.csv.*;
+import java.io.*;
 
 public class MiniProjectForBabies {
     public void totalBirths(FileResource fileResource) {
@@ -172,9 +173,32 @@ public class MiniProjectForBabies {
         //of the selected files, it should return -1.
         
         DirectoryResource directoryResource = new DirectoryResource();
-        int result = 0;
-        //I could call getRank() but I need to pass a year to the method and all I have are
-        //name and gender. Parsing the year out of the filename would be worth trying.
-        return result;
+        Integer highestRank = null;
+        Integer yearOfHighestRank = null;
+        for (File file : directoryResource.selectedFiles()) {
+            int yearOfFile = Integer.parseInt(file.getName().substring(3,7));
+            int currentRank = getRank(yearOfFile, name, gender);
+            //I need to check if the name and gender exist in the file
+            //then hold the -1 value until either name and gender are found
+            //or the last file was processed and the -1 is the return value
+            if (highestRank == null) {
+                highestRank = currentRank;
+            }
+            else if (currentRank < highestRank) {
+                highestRank = currentRank;
+                yearOfHighestRank = yearOfFile;
+            }
+        }
+        if (yearOfHighestRank == null) {
+            yearOfHighestRank = -1;
+        }
+        return yearOfHighestRank;
+    }
+    public void testYearOfHighestRank() {
+        String name = "Mason";
+        String gender = "M";
+        System.out.println("Mason's highest ranked year is " + yearOfHighestRank(name,gender));
+        name = "Jimbob";
+        System.out.println("Jimbob's highest ranked year is " + yearOfHighestRank(name,gender));
     }
 }
