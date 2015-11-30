@@ -49,10 +49,6 @@ public class MiniProjectForBabies {
 		System.out.println("Total unique girl's names " + uniqueGirls);
 		System.out.println("Total unique boy's names " + uniqueBoys);
     }
-    public void testTotalBirths() {
-        FileResource fr = new FileResource();
-        totalBirths(fr);
-    }
     public CSVParser getParserFromFile(int year) {
         FileResource fr = new FileResource("us_babynames_by_year/yob" + year + ".csv");
         CSVParser parser = fr.getCSVParser(false);
@@ -93,24 +89,6 @@ public class MiniProjectForBabies {
         }
         return result.intValue();
     }
-    public void testGetRank() {
-        int year = 2016;
-        String name = "Emma";
-        String gender = "F";
-        System.out.println(name + "/" + gender + " ranked " + getRank(year, name, gender) + " in " + year);
-        name = "Noah";
-        gender = "M";
-        System.out.println(name + "/" + gender + " ranked " + getRank(year, name, gender) + " in " + year);
-        name = "NoName";
-        gender = "M";
-        System.out.println(name + "/" + gender + " ranked " + getRank(year, name, gender) + " in " + year);
-        name = "Ava";
-        gender = "M";
-        System.out.println(name + "/" + gender + " ranked " + getRank(year, name, gender) + " in " + year);
-        name = "Mason";
-        gender = "M";
-        System.out.println(name + "/" + gender + " ranked " + getRank(year, name, gender) + " in " + year);
-    }
     public String getName(int year, int rank, String gender) {
         //Returns the name of the person in the file at specified rank and gender. 
         //If rank does not exist in the file, then "NO NAME" is returned. CSV files 
@@ -135,22 +113,6 @@ public class MiniProjectForBabies {
         }
         return result;
     }
-    public void testGetName() {
-        int year = 2016;
-        int rank = 1;
-        String gender = "F";
-        System.out.println("Rank " + rank + " for gender " + gender + " in year " 
-                           + year + " is name: " + getName(year,rank,gender));
-        gender = "M";
-        System.out.println("Rank " + rank + " for gender " + gender + " in year " 
-                           + year + " is name: " + getName(year,rank,gender));
-        rank = 3;
-        System.out.println("Rank " + rank + " for gender " + gender + " in year " 
-                           + year + " is name: " + getName(year,rank,gender));
-        rank = 69;
-        System.out.println("Rank " + rank + " for gender " + gender + " in year " 
-                           + year + " is name: " + getName(year,rank,gender));
-    }
     public void whatIsNameInYear(String name, int year, int newYear, String gender) {
         //Determines what name would have been named if they were born in a different year,
         //based on the same popularity. You should determine the rank of name in the year
@@ -164,14 +126,6 @@ public class MiniProjectForBabies {
         String rankedName = getName(newYear,ranking,gender);
         
         System.out.println(name + " born in " + year + " would be named " + rankedName + " if they were born in " + newYear);
-    }
-    public void testWhatIsNameInYear() {
-        String name = "Isabella";
-        int year = 2012;
-        int newYear = 2014;
-        String gender = "F";
-        
-        whatIsNameInYear(name, year, newYear, gender);
     }
     public int yearOfHighestRank(String name, String gender) {
         //This method selects a range of files to process and returns an integer, the year
@@ -187,18 +141,11 @@ public class MiniProjectForBabies {
                 highestRank = currentRank;
                 yearOfHighestRank = yearOfFile;
             }
-            else if (currentRank == -1) {
-                yearOfHighestRank = currentRank;
-            }
+        }
+        if (yearOfHighestRank == null) {
+            yearOfHighestRank = -1;
         }
         return yearOfHighestRank;
-    }
-    public void testYearOfHighestRank() {
-        String name = "Mason";
-        String gender = "M";
-        System.out.println("Mason's highest ranked year is " + yearOfHighestRank(name,gender));
-        name = "Jimbob";
-        System.out.println("Jimbob's highest ranked year is " + yearOfHighestRank(name,gender));
     }
     public double getAverageRank(String name, String gender) {
         //This method selects a range of files to process and returns a double representing 
@@ -222,13 +169,6 @@ public class MiniProjectForBabies {
             averageRank /= (double) numberOfYears;
         }
         return averageRank;
-    }
-    public void testGetAverageRank() {
-        String name = "Mason";
-        String gender = "M";
-        System.out.println("Mason's average rank is " + getAverageRank(name, gender));
-        name = "JimBob";
-        System.out.println("JimBob's average rank is " + getAverageRank(name, gender));
     }
     public int getTotalBirthsRankedHigher(int year, String name, String gender) {
         //This method returns an integer, the total number of births of those names 
@@ -258,10 +198,38 @@ public class MiniProjectForBabies {
         }
         return totalBirths;
     }
-    public void testGetTotalBirthsRankedHigher() {
-        int year = 2012;
-        String name = "Ethan";
-        String gender = "M";
-        System.out.println(getTotalBirthsRankedHigher(year, name, gender));
+    public void getTotalBirthsByYear(String name) {
+        DirectoryResource directoryResource = new DirectoryResource();
+        for (File file : directoryResource.selectedFiles()) {
+            int year = Integer.parseInt(file.getName().substring(3,7));
+            int totalBirths = 0;
+            CSVParser csvParser = getParserFromFile(year);
+            for (CSVRecord currentRow : csvParser) {
+                if (currentRow.get(0).equals(name)) {
+                    totalBirths = Integer.parseInt(currentRow.get(2));
+                }
+            }
+            System.out.println("Total births for " + name + " in " + year + " = " + totalBirths);
+        }
+    }
+    public void yearOfMostBirths(String name) {
+        DirectoryResource directoryResource = new DirectoryResource();
+        int yearOfMostBirths = 0;
+        int highestBirths = 0;
+        for (File file : directoryResource.selectedFiles()) {
+            int year = Integer.parseInt(file.getName().substring(3,7));
+            int totalBirths = 0;
+            CSVParser csvParser = getParserFromFile(year);
+            for (CSVRecord currentRow : csvParser) {
+                if (currentRow.get(0).equals(name)) {
+                    totalBirths = Integer.parseInt(currentRow.get(2));
+                }
+            }
+            if (totalBirths > highestBirths) {
+                yearOfMostBirths = year;
+                highestBirths = totalBirths;
+            }
+        }
+        System.out.println(name + " had most births in " + yearOfMostBirths);
     }
 }
