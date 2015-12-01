@@ -232,4 +232,12 @@ public class MiniProjectForBabies {
         }
         System.out.println(name + " had most births in " + yearOfMostBirths);
     }
+    public int getBirths(DirectoryResource directoryResource) {
+        int totalBirths = 0;
+        for (File file : directoryResource.selectedFiles()) {
+            int year = Integer.parseInt(file.getName().substring(3,7));
+            
+        }
+        return totalBirths;
+    }
 }
