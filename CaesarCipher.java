@@ -58,15 +58,29 @@ public class CaesarCipher {
         return encryptedInput.toString();
     }
     public void testCaesar() {
-        int key1 = 2;
-        int key2 = 20;
         //FileResource fr = new FileResource();
         //String message = fr.asString();
-        String message = "Top ncmy qkff vi vguv vbg ycpx";
+        
+        String message = "Can you imagine life WITHOUT the internet AND computers in your pocket?";
+        String encrypted = encrypt(message,15);
+        System.out.println("Answer to 1:\n" + encrypted);
+        
+        String encryptedTwo = encryptTwoKeys(message, 21, 8);
+        System.out.println("Answer to 2:\n" + encryptedTwo);
+        
+        String input = "Hfs cpwewloj loks cd Hoto kyg Cyy.";
+        int key1 = 14;
+        int key2 = 24;
+        System.out.println("Answer to 6:\n" + encryptTwoKeys(input,26-key1,26-key2));
+        
+        //String message = "Top ncmy qkff vi vguv vbg ycpx";
         //String encrypted = encryptTwoKeys(message, key1, key2);
         //System.out.println(encrypted);
+        
         //String decrypted = encryptTwoKeys(encrypted, 26-key1, 26-key2);
-        String decrypted = encryptTwoKeys(message,26-key1,26-key2);
-        System.out.println(decrypted);
+        //String decrypted = encryptTwoKeys(message,26-key1,26-key2);
+        //System.out.println(decrypted);
+        
+        
     }
 }
