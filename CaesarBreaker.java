@@ -49,7 +49,12 @@ public class CaesarBreaker {
     }
     public int getKey(String s) {
         int[] letterFreqs = countOccurrencesOfLetters(s);
-        return maxIndex(letterFreqs);
+        int maxDex = maxIndex(letterFreqs);
+        int dkey = maxDex - 4;
+        if (maxDex < 4) {
+            dkey = 26 - (4-maxDex);
+        }
+        return 26-dkey;
     }
     public String decryptTwoKeys(String encrypted) {
         String firstHalfEncrypted = halfOfString(encrypted,0);
@@ -57,17 +62,11 @@ public class CaesarBreaker {
         int firstHalfKey = getKey(firstHalfEncrypted);
         int secondHalfKey = getKey(secondHalfEncrypted);
         CaesarCipher cc = new CaesarCipher();
-        int dkey1 = firstHalfKey - 4;
-        int dkey2 = secondHalfKey - 4;
-        if (firstHalfKey < 4) {
-            dkey1 = 26 - (4-firstHalfKey);
-        }
-        if (secondHalfKey < 4) {
-            dkey2 = 26 - (4-secondHalfKey);
-        }
-        System.out.println("First key:\t" + dkey1 + "\nSecond key:\t"
-                            + dkey2);
-        return cc.encryptTwoKeys(encrypted,26-dkey1,26-dkey2);
+        
+        System.out.println("First key:\t" + firstHalfKey + "\nSecond key:\t"
+                            + secondHalfKey);
+                            
+        return cc.encryptTwoKeys(encrypted,firstHalfKey,secondHalfKey);
     }
     public void testDecrypt() {
         FileResource fileResource = new FileResource();
