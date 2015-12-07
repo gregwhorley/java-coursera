@@ -46,11 +46,9 @@ public class WordLengths {
         //determine the most common word length in the file. For example, calling
         //indexOfMax after calling countWordLengths on the file smallHamlet.txt 
         //should return 3.
-        int highestLength = 0;
         int indexOfMax = 0;
         for (int index = 0; index < values.length; index++) {
-            if (values[index] > highestLength) {
-                highestLength = values[index];
+            if (values[index] > values[indexOfMax]) {
                 indexOfMax = index;
             }
         }
