@@ -47,9 +47,9 @@ public class WordFrequencies
         System.out.println("# unique words: "+myWords.size());
         int index = findMax();
         System.out.println("max word/freq: "+myWords.get(index)+" "+myFreqs.get(index));
-        for (int k = 0; k < myWords.size(); k++) {
-            System.out.println("Word: "+myWords.get(k)+"\tNumber of times found: "+myFreqs.get(k));
-        }
+        //for (int k = 0; k < myWords.size(); k++) {
+            //System.out.println("Word: "+myWords.get(k)+"\tNumber of times found: "+myFreqs.get(k));
+        //}
     }
     public int findMax(){
         int max = myFreqs.get(0);

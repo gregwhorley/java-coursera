@@ -40,22 +40,39 @@ public class CharactersInPlay {
         //for each line
         for (String line : fileResource.lines()) {
             //if a period is found
-            if (line.indexOf(".") != -1) {
-                //extract the possible name of the speaking part and call update()
-                // to count it as an occurrence for this person
-                update(line);
+            int periodInLine = line.indexOf(".");
+            if (periodInLine != -1) {
+                //extract the possible name of the speaking part
+                String possibleName = line.substring(0,periodInLine);
+                //and call update() to count it as an occurrence for this person
+                update(possibleName);
             }
         }
     }
-    
+    public int findMax() {
+        int maxElement = myCharacterFreqs.get(0);
+        int maxIndex = 0;
+        for (int k=0; k < myCharacterFreqs.size(); k++) {
+            if (myCharacterFreqs.get(k) > maxElement) {
+                maxElement = myCharacterFreqs.get(k);
+                maxIndex = k;
+            }
+        }
+        return maxIndex;
+    }
     public void tester() {
         //call findAllCharacters()
         findAllCharacters();
+        //test charactersWithNumParts()
+        charactersWithNumParts(10,15);
         //print out each main character, followed by number of speaking parts for that character
-        //"A main character is one who has more speaking parts than most people" (probably need a findMax() method)
-        for (int index=0;index < myCharacters.size();index++) {
-            System.out.println(myCharacters.get(index)+"\t"+myCharacterFreqs.get(index));
-        }
+        //"A main character is one who has more speaking parts than most people"
+        int bigIndex = findMax();
+        System.out.println("Character with most speaking parts: "+myCharacters.get(bigIndex)
+                            +"\t"+myCharacterFreqs.get(bigIndex));
+        //for (int index=0;index < myCharacters.size();index++) {
+            //System.out.println(myCharacters.get(index)+"\t"+myCharacterFreqs.get(index));
+        //}
     }
     public void charactersWithNumParts(int num1, int num2) {
         //assume num1 is less than or equal to num2
@@ -63,6 +80,10 @@ public class CharactersInPlay {
         //This method should print out the names of all those characters that have
         // exactly number speaking parts, where number is greater than or equal to
         // num1 and less than or equal to num2
-        
+        for (int k=0; k < myCharacterFreqs.size(); k++) {
+            if (myCharacterFreqs.get(k) >= num1 && myCharacterFreqs.get(k) <= num2) {
+                System.out.println(myCharacters.get(k)+"\t\t"+myCharacterFreqs.get(k));
+            }
+        }
     }
 }
