@@ -64,7 +64,7 @@ public class CharactersInPlay {
         //call findAllCharacters()
         findAllCharacters();
         //test charactersWithNumParts()
-        charactersWithNumParts(10,15);
+        charactersWithNumParts(2,999);
         //print out each main character, followed by number of speaking parts for that character
         //"A main character is one who has more speaking parts than most people"
         int bigIndex = findMax();
