@@ -18,11 +18,7 @@ public class LogAnalyzer
      }
         
      public void readFile(String filename) {
-         // complete method to create a FileResource and iterate over all the lines in the file
          FileResource fileResource = new FileResource(filename);
-         // For each line, create a LogEntry and store it in records
-         //  Use WebLogParser.parseEntry to return a LogEntry with parsed data
-         //  Add the returned LogEntry to records
          for (String line : fileResource.lines()) {
              LogEntry parseEntry = WebLogParser.parseEntry(line);
              records.add(parseEntry);
@@ -34,6 +30,44 @@ public class LogAnalyzer
              System.out.println(le);
          }
      }
-     
-     
+     public int countUniqueIPs() {
+         ArrayList<String> uniqueIPs = new ArrayList<String>();
+         for (LogEntry le : records) {
+             String ipAddress = le.getIpAddress();
+             if (!uniqueIPs.contains(ipAddress)) {
+                 uniqueIPs.add(ipAddress);
+             }
+         }
+         return uniqueIPs.size();
+     }
+     public void printAllHigherThanNum(int num) {
+         for (LogEntry le : records) {
+             int currentStatusCode = le.getStatusCode();
+             if (currentStatusCode > num) {
+                 System.out.println(le);
+             }
+         }
+     }
+     public ArrayList<String> uniqueIPVisitsOnDay(String someday) {
+         ArrayList<String> uniqueIPs = new ArrayList<String>();
+         for (LogEntry le : records) {
+             String accessTime = le.getAccessTime().toString();
+             String ipAddress = le.getIpAddress();
+             if (accessTime.contains(someday) && !uniqueIPs.contains(ipAddress)) {
+                 uniqueIPs.add(le.getIpAddress());
+             }
+         }
+         return uniqueIPs;
+     }
+     public int countUniqueIPsInRange(int low, int high) {
+         ArrayList<String> uniqueIPs = new ArrayList<String>();
+         for (LogEntry le : records) {
+             String ipAddress = le.getIpAddress();
+             int statusCode = le.getStatusCode();
+             if (!uniqueIPs.contains(ipAddress) && low <= statusCode && statusCode <= high) {
+                 uniqueIPs.add(ipAddress);
+             }
+         }
+         return uniqueIPs.size();
+     }
 }
