@@ -1,5 +1,6 @@
 import java.util.*;
 import edu.duke.*;
+import java.io.File;
 
 public class VigenereBreaker {
     public String sliceString(String message, int whichSlice, int totalSlices) {
@@ -61,12 +62,6 @@ public class VigenereBreaker {
     }
     
     public char mostCommonCharIn(HashSet<String> dictionary) {
-        /**
-         * This method should find out which character, of the letters in the English
-         * alphabet, appears most often in the words in dictionary. It should return this 
-         * most commonly occurring character. Remember that you can iterate over a HashSet 
-         * of Strings with a for-each style for loop.
-         */
         HashMap<Character,Integer> characterCounter = new HashMap<Character,Integer>();
         for (String word : dictionary) {
             char[] letters = word.toCharArray();
@@ -91,16 +86,6 @@ public class VigenereBreaker {
     }
     
     public void breakForAllLanguages(String encrypted, HashMap<String,HashSet<String>> languages) {
-        /**
-         * Try breaking the encryption for each language, and see which gives the best results!
-         * Remember that you can iterate over the language.keySet() to get the name of each 
-         * language, and then you can use .get() to look up the corresponding dictionary for 
-         * that language. You will want to use the breakForLanguage and countWords methods that
-         * you already wrote to do most of the work (it is slightly inefficient to re-count the
-         * words here, but it is simpler, and the inefficiency is not significant). You will 
-         * want to print out the decrypted message as well as the language that you identified
-         * for the message.
-         */
         int currentHigh = 0;
         String decryptedMessage = "";
         String usedLanguage = "";
@@ -169,7 +154,24 @@ public class VigenereBreaker {
         * your program is making progress. Once you have made that change, you will want to 
         * call breakForAllLangs, passing in the message (the code to read in the message is 
         * unchanged from before), and the HashMap you just created.
+        * 1. French
+        * 2. La chambre à coucher de Juliette.
+        * 3. German
+        * 4. Drei Hexen treten auf.
         */
+       HashMap<String,HashSet<String>> dictionaries = new HashMap<String,HashSet<String>>();
+       File folder = new File("dictionaries/");
+       File[] fileList = folder.listFiles();
+       for (int index=0;index<fileList.length;index++) {
+           if (fileList[index].isFile()) {
+               FileResource dictionaryFile = new FileResource(fileList[index]);
+               HashSet<String> dictionary = readDictionary(dictionaryFile);
+               dictionaries.put(fileList[index].getName(),dictionary);
+               System.out.println("Reading in "+fileList[index]+" dictionary...");
+           }
+       }
+       FileResource encryptedFile = new FileResource();
+       breakForAllLanguages(encryptedFile.asString(),dictionaries);
     }
     
 }
