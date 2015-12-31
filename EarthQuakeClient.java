@@ -34,6 +34,35 @@ public class EarthQuakeClient
 
         return answer;
     }
+    
+    public ArrayList<QuakeEntry> filterByDepth(ArrayList<QuakeEntry> quakeData, double minDepth, double maxDepth) {
+        ArrayList<QuakeEntry> filtered = new ArrayList<QuakeEntry>();
+        
+        for (QuakeEntry quakeEntry : quakeData) {
+            if (quakeEntry.getDepth() > minDepth && quakeEntry.getDepth() < maxDepth) {
+                filtered.add(quakeEntry);
+            }
+        }
+        
+        return filtered;
+    }
+    
+    public ArrayList<QuakeEntry> filterByPhrase(ArrayList<QuakeEntry> quakeData, String where, String phrase) {
+        ArrayList<QuakeEntry> filtered = new ArrayList<QuakeEntry>();
+        
+        for (QuakeEntry quakeEntry : quakeData) {
+            if (where.equalsIgnoreCase("start") && quakeEntry.getInfo().startsWith(phrase)) {
+                filtered.add(quakeEntry);
+            }
+            else if (where.equalsIgnoreCase("end") && quakeEntry.getInfo().endsWith(phrase)) {
+                filtered.add(quakeEntry);
+            }
+            else if (where.equalsIgnoreCase("any") && quakeEntry.getInfo().contains(phrase)) {
+                filtered.add(quakeEntry);
+            }
+        }
+        return filtered;
+    }
 
     public void dumpCSV(ArrayList<QuakeEntry> list){
         System.out.println("Latitude,Longitude,Magnitude,Info");
@@ -45,6 +74,21 @@ public class EarthQuakeClient
                 qe.getInfo());
         }
 
+    }
+    
+    public void quakesByPhrase() {
+        EarthQuakeParser parser = new EarthQuakeParser();
+        //String source = "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.atom";
+        String source = "data/nov20quakedatasmall.atom";
+        ArrayList<QuakeEntry> list  = parser.read(source);
+        System.out.println("read data for "+list.size()+" quakes");
+        String where = "start";
+        String phrase = "Explosion";
+        ArrayList<QuakeEntry> phrasedQuakes = filterByPhrase(list, where, phrase);
+        for (QuakeEntry quakeEntry : phrasedQuakes) {
+            System.out.println(quakeEntry.toString());
+        }
+        System.out.println("Found "+phrasedQuakes.size()+" that match "+phrase+" at "+where);
     }
 
     public void bigQuakes() {
@@ -65,22 +109,30 @@ public class EarthQuakeClient
         String source = "data/nov20quakedatasmall.atom";
         ArrayList<QuakeEntry> list  = parser.read(source);
         System.out.println("read data for "+list.size()+" quakes");
-
         // This location is Durham, NC
         //Location city = new Location(35.988, -78.907);
-
         // This location is Bridgeport, CA
-        Location city =  new Location(38.17, -118.82);
-        
+        Location city =  new Location(38.17, -118.82);       
         ArrayList<QuakeEntry> closeQuakes = filterByDistanceFrom(list, 1000000.0, city);
-        /* 
-         * Print the distance from the earthquake to the specified city, followed by
-         *  the information about the city (use getInfo())
-        */
         for (QuakeEntry quakeEntry : closeQuakes) {
             System.out.println(quakeEntry.getLocation().distanceTo(city)/1000+" "+quakeEntry.getInfo());
         }
         System.out.println("Found "+closeQuakes.size()+" quakes that match that criteria.");
+    }
+    
+    public void quakesOfDepth() {
+        EarthQuakeParser parser = new EarthQuakeParser();
+        String source = "data/nov20quakedatasmall.atom";
+        ArrayList<QuakeEntry> list  = parser.read(source);
+        System.out.println("read data for "+list.size()+" quakes");
+        double min = -10000.0;
+        double max = -5000.0;
+        ArrayList<QuakeEntry> quakeDepths = filterByDepth(list, min, max);
+        System.out.println("Find quakes with depth between "+min+" and "+max);
+        for (QuakeEntry quakeEntry : quakeDepths) {
+            System.out.println(quakeEntry.toString());
+        }
+        System.out.println("Found "+quakeDepths.size()+" quakes that match that criteria");
     }
 
     public void createCSV(){
