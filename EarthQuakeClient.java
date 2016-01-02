@@ -79,11 +79,11 @@ public class EarthQuakeClient
     public void quakesByPhrase() {
         EarthQuakeParser parser = new EarthQuakeParser();
         //String source = "http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.atom";
-        String source = "data/nov20quakedatasmall.atom";
+        String source = "data/nov20quakedata.atom";
         ArrayList<QuakeEntry> list  = parser.read(source);
         System.out.println("read data for "+list.size()+" quakes");
-        String where = "start";
-        String phrase = "Explosion";
+        String where = "any";
+        String phrase = "Creek";
         ArrayList<QuakeEntry> phrasedQuakes = filterByPhrase(list, where, phrase);
         for (QuakeEntry quakeEntry : phrasedQuakes) {
             System.out.println(quakeEntry.toString());
@@ -122,10 +122,10 @@ public class EarthQuakeClient
     
     public void quakesOfDepth() {
         EarthQuakeParser parser = new EarthQuakeParser();
-        String source = "data/nov20quakedatasmall.atom";
+        String source = "data/nov20quakedata.atom";
         ArrayList<QuakeEntry> list  = parser.read(source);
         System.out.println("read data for "+list.size()+" quakes");
-        double min = -10000.0;
+        double min = -8000.0;
         double max = -5000.0;
         ArrayList<QuakeEntry> quakeDepths = filterByDepth(list, min, max);
         System.out.println("Find quakes with depth between "+min+" and "+max);

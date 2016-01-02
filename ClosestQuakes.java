@@ -11,14 +11,6 @@ import java.util.*;
 public class ClosestQuakes
 {
     public ArrayList<QuakeEntry> getClosest(ArrayList<QuakeEntry> quakeData, Location current, int howMany){
-        /*
-         * This method has three parameters, an ArrayList of type QuakeEntry named quakeData, 
-         * a Location named current, and an int named howMany. This method should find the closest 
-         * number of howMany earthquakes to the current Location and return them in an ArrayList of 
-         * type QuakeEntry. The earthquakes should be in the ArrayList in order with the closest 
-         * earthquake in index position 0. If there are fewer than howMany earthquakes in quakeData, 
-         * then the ArrayList returned would be the same size as quakeData.
-         */
         ArrayList<QuakeEntry> ret = new ArrayList<QuakeEntry>();
         for (int j=0;j < howMany;j++) {
             int minIndex = 0;
