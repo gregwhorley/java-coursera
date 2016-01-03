@@ -24,7 +24,7 @@ public class LargestQuakes {
        System.out.println("Found highest magnitude at location "+indexOfLargest);
        System.out.println(list.get(indexOfLargest).toString());
        */
-       ArrayList<QuakeEntry> largestQuakes = getLargest(list,5);
+       ArrayList<QuakeEntry> largestQuakes = getLargest(list,50);
        for (QuakeEntry quakeEntry : largestQuakes) {
            System.out.println(quakeEntry.toString());
         }

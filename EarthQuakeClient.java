@@ -83,7 +83,7 @@ public class EarthQuakeClient
         ArrayList<QuakeEntry> list  = parser.read(source);
         System.out.println("read data for "+list.size()+" quakes");
         String where = "any";
-        String phrase = "Creek";
+        String phrase = "Can";
         ArrayList<QuakeEntry> phrasedQuakes = filterByPhrase(list, where, phrase);
         for (QuakeEntry quakeEntry : phrasedQuakes) {
             System.out.println(quakeEntry.toString());
@@ -125,8 +125,8 @@ public class EarthQuakeClient
         String source = "data/nov20quakedata.atom";
         ArrayList<QuakeEntry> list  = parser.read(source);
         System.out.println("read data for "+list.size()+" quakes");
-        double min = -8000.0;
-        double max = -5000.0;
+        double min = -4000.0;
+        double max = -2000.0;
         ArrayList<QuakeEntry> quakeDepths = filterByDepth(list, min, max);
         System.out.println("Find quakes with depth between "+min+" and "+max);
         for (QuakeEntry quakeEntry : quakeDepths) {
