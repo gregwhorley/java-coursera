@@ -7,14 +7,14 @@
  */
 import java.util.*;
 
-public class MarkovModel {
+public class MarkovModel implements IMarkovModel {
     private String myText;
     private Random myRandom;
-    int keyLength;
+    int order;
     
     public MarkovModel(int n) {
         myRandom = new Random();
-        keyLength = n;
+        order = n;
     }
     
     public ArrayList<String> getFollows(String key) {
@@ -44,11 +44,11 @@ public class MarkovModel {
     
     public String getRandomText(int numChars){
         StringBuilder sb = new StringBuilder();
-        int index = myRandom.nextInt(myText.length()-(keyLength+1));
-        String key = myText.substring(index, index+keyLength);
+        int index = myRandom.nextInt(myText.length()-(order+1));
+        String key = myText.substring(index, index+order);
         sb.append(key);
         
-        for(int k=0; k < numChars-keyLength; k++){
+        for(int k=0; k < numChars-order; k++){
             ArrayList<String> follows = getFollows(key);
             //System.out.println("key "+key+" "+follows);
             if (follows.size() == 0) {
