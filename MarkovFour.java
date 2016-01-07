@@ -7,43 +7,10 @@
  */
 import java.util.*;
 
-public class MarkovFour implements IMarkovModel {
-    private String myText;
-    private Random myRandom;
+public class MarkovFour extends AbstractMarkovModel {
     
     public MarkovFour() {
         myRandom = new Random();
-    }
-    
-    public ArrayList<String> getFollows(String key) {
-        ArrayList<String> follows = new ArrayList<String>();
-        int placeHolder = 0;
-        while (placeHolder < myText.length()) {
-            int foundKey = myText.indexOf(key,placeHolder);
-            /*
-            if (foundKey != -1 && foundKey < myText.length()-key.length()-1) {
-                follows.add(myText.substring(foundKey+key.length(),
-                                                foundKey+key.length()+1));
-                placeHolder = foundKey + key.length();
-            }
-            else {
-                placeHolder++;
-            }
-            */
-           if (foundKey == -1) {
-               break;
-            }
-           if (foundKey+key.length() >= myText.length()) {
-               break;
-            }
-           follows.add(myText.substring(foundKey+key.length(),foundKey+key.length()+1));
-           placeHolder = foundKey + key.length();
-        }
-        return follows;
-    }
-    
-    public void setRandom(int seed){
-        myRandom = new Random(seed);
     }
     
     public void setTraining(String s){
@@ -69,5 +36,9 @@ public class MarkovFour implements IMarkovModel {
         }
         
         return sb.toString();
+    }
+    
+    public String toString() {
+        return "MarkovModel of order 4";
     }
 }

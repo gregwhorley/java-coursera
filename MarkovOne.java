@@ -7,33 +7,10 @@
  */
 import java.util.*;
 
-public class MarkovOne implements IMarkovModel {
-    private String myText;
-    private Random myRandom;
+public class MarkovOne extends AbstractMarkovModel {
     
     public MarkovOne() {
         myRandom = new Random();
-    }
-    
-    public ArrayList<String> getFollows(String key) {
-        ArrayList<String> follows = new ArrayList<String>();
-        int placeHolder = 0;
-        while (placeHolder < myText.length()) {
-            int foundKey = myText.indexOf(key,placeHolder);
-            if (foundKey != -1 && foundKey < myText.length()-key.length()-1) {
-                follows.add(myText.substring(foundKey+key.length(),
-                                                foundKey+key.length()+1));
-                placeHolder = foundKey + key.length();
-            }
-            else {
-                placeHolder++;
-            }
-        }
-        return follows;
-    }
-    
-    public void setRandom(int seed){
-        myRandom = new Random(seed);
     }
     
     public void setTraining(String s){
@@ -58,5 +35,9 @@ public class MarkovOne implements IMarkovModel {
         }
         
         return sb.toString();
+    }
+    
+    public String toString() {
+        return "MarkovModel of order one";
     }
 }

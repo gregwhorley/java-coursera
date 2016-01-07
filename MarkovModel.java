@@ -7,35 +7,12 @@
  */
 import java.util.*;
 
-public class MarkovModel implements IMarkovModel {
-    private String myText;
-    private Random myRandom;
+public class MarkovModel extends AbstractMarkovModel {
     int order;
     
     public MarkovModel(int n) {
         myRandom = new Random();
         order = n;
-    }
-    
-    public ArrayList<String> getFollows(String key) {
-        ArrayList<String> follows = new ArrayList<String>();
-        int placeHolder = 0;
-        while (placeHolder < myText.length()) {
-            int foundKey = myText.indexOf(key,placeHolder);
-           if (foundKey == -1) {
-               break;
-            }
-           if (foundKey+key.length() >= myText.length()) {
-               break;
-            }
-           follows.add(myText.substring(foundKey+key.length(),foundKey+key.length()+1));
-           placeHolder = foundKey + key.length();
-        }
-        return follows;
-    }
-    
-    public void setRandom(int seed){
-        myRandom = new Random(seed);
     }
     
     public void setTraining(String s){
@@ -61,5 +38,9 @@ public class MarkovModel implements IMarkovModel {
         }
         
         return sb.toString();
+    }
+    
+    public String toString() {
+        return "MarkovModel of order "+order;
     }
 }
