@@ -24,7 +24,7 @@ public class Tester {
 		String st = fr.asString();
 		st = st.replace('\n', ' ');
 		markov.setTraining(st);
-		ArrayList<String> follows = markov.getFollows("t");
+		ArrayList<String> follows = markov.getFollows("th");
 		System.out.println(follows.size());
     }
 }

@@ -1,17 +1,17 @@
 
 /**
- * Write a description of MarkovOne here.
+ * Write a description of MarkovFour here.
  * 
  * @author (your name) 
  * @version (a version number or a date)
  */
 import java.util.*;
 
-public class MarkovOne {
+public class MarkovFour {
     private String myText;
     private Random myRandom;
     
-    public MarkovOne() {
+    public MarkovFour() {
         myRandom = new Random();
     }
     
@@ -20,6 +20,7 @@ public class MarkovOne {
         int placeHolder = 0;
         while (placeHolder < myText.length()) {
             int foundKey = myText.indexOf(key,placeHolder);
+            /*
             if (foundKey != -1 && foundKey < myText.length()-key.length()-1) {
                 follows.add(myText.substring(foundKey+key.length(),
                                                 foundKey+key.length()+1));
@@ -28,6 +29,15 @@ public class MarkovOne {
             else {
                 placeHolder++;
             }
+            */
+           if (foundKey == -1) {
+               break;
+            }
+           if (foundKey+key.length() >= myText.length()) {
+               break;
+            }
+           follows.add(myText.substring(foundKey+key.length(),foundKey+key.length()+1));
+           placeHolder = foundKey + key.length();
         }
         return follows;
     }
@@ -42,19 +52,20 @@ public class MarkovOne {
     
     public String getRandomText(int numChars){
         StringBuilder sb = new StringBuilder();
-        int index = myRandom.nextInt(myText.length()-2);
-        String key = myText.substring(index, index+1);
+        int index = myRandom.nextInt(myText.length()-5);
+        String key = myText.substring(index, index+4);
         sb.append(key);
         
-        for(int k=0; k < numChars-1; k++){
+        for(int k=0; k < numChars-4; k++){
             ArrayList<String> follows = getFollows(key);
+            //System.out.println("key "+key+" "+follows);
             if (follows.size() == 0) {
                 break;
             }
             index = myRandom.nextInt(follows.size());
             String next = follows.get(index);
             sb.append(next);
-            key = next;
+            key = key.substring(1) + next;
         }
         
         return sb.toString();
