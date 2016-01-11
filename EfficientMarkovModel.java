@@ -8,7 +8,8 @@
 import java.util.*;
 
 public class EfficientMarkovModel extends AbstractMarkovModel {
-    int order;
+    private int order;
+    private HashMap<String,ArrayList<String>> markovMap;
     
     public EfficientMarkovModel(int n) {
         myRandom = new Random();
@@ -17,40 +18,62 @@ public class EfficientMarkovModel extends AbstractMarkovModel {
     
     public void setTraining(String s){
         myText = s;
+        markovMap = buildMap();
     }
-    /*
-     * Write a new class named EfficientMarkovModel (make a copy of MarkovModel to start with) 
-     * that extends AbstractMarkovModel and that builds a HashMap to calculate the follows 
-     * ArrayList for each possible substring only once, and then uses the HashMap to look at 
-     * the list of characters following when it is needed.
-     */
-    public void buildMap(HashMap<String,ArrayList<String>> map) {
-        /*
-         * Build the HashMap (Be sure to handle the case where there may not be a 
-         * follow character. If that key is not in the HashMap yet, then it should 
-         * be put in mapped to an empty ArrayList.) Think carefully about where to 
-         * call this method, considering that you will want to build a map for each 
-         * new training text. 
-         * 
-         * 
-         * The map should be built after only one scan of the training text
-         * 
-         */
+
+    private HashMap<String,ArrayList<String>> buildMap() {
+        HashMap<String,ArrayList<String>> mappedChars = new HashMap<String,ArrayList<String>>();
+        int placeHolder = 0;
+        while (placeHolder < myText.length()-(order-1)) {
+            String key = myText.substring(placeHolder,placeHolder+order);
+            if (!mappedChars.containsKey(key) && placeHolder + order < myText.length()) {
+                mappedChars.put(key,new ArrayList<String>(Arrays.asList(
+                          myText.substring(placeHolder+key.length(),placeHolder+key.length()+1))));
+            }
+            else if (mappedChars.containsKey(key) && placeHolder + order < myText.length()){
+                ArrayList<String> currentValues = mappedChars.get(key);
+                currentValues.add(myText.substring(placeHolder+key.length(),placeHolder+key.length()+1));
+                mappedChars.replace(key,currentValues);
+            }
+            else if (placeHolder + order == myText.length()){
+                mappedChars.put(key, new ArrayList<String>());
+            }
+            
+            placeHolder++;
+        }
         
-        
+        return mappedChars;
     }
     
+    @Override
     public ArrayList<String> getFollows(String key) {
-        /*
-         *  This getFollows method should be much shorter, as it can look up the 
-         *  ArrayList of Strings, instead of computing it each time.
-         *  
-         *  
-         */
+        return markovMap.get(key);
+    }
+    
+    public void printHashMapInfo() {
+        System.out.println("Key total: "+markovMap.size());
+        int largest = 0;
+        int counter = 0;
+        for (String key: markovMap.keySet()) {
+            //System.out.println("Key number: "+counter+"\tKey text: "+key+"\tKey value: "+markovMap.get(key));
+            if (markovMap.get(key).size() > largest) {
+                largest = markovMap.get(key).size();
+            }
+            counter++;
+        }
+        System.out.println("Largest value in HashMap: "+largest);
+        ArrayList<String> keysWithMax = new ArrayList<String>();
+        for (String key: markovMap.keySet()) {
+            if (markovMap.get(key).size() == largest) {
+                keysWithMax.add(key);
+            }
+        }
+        System.out.println("Keys with maximum size value: "+keysWithMax);
     }
     
     public String getRandomText(int numChars){
         StringBuilder sb = new StringBuilder();
+        printHashMapInfo();
         int index = myRandom.nextInt(myText.length()-(order+1));
         String key = myText.substring(index, index+order);
         sb.append(key);

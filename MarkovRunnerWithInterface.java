@@ -19,6 +19,41 @@ public class MarkovRunnerWithInterface {
 		}
     }
     
+    public void compareMethods() {
+        FileResource fr = new FileResource();
+		String st = fr.asString();
+		//st = st.replace('\n', ' ');
+		int size = 1000;
+		int seed = 42;
+		
+		
+		MarkovModel markov = new MarkovModel(2);
+		long startTime = System.currentTimeMillis();
+        runModel(markov, st, size, seed);
+        long endTime = System.currentTimeMillis();
+        System.out.println(markov.toString()+" took "+(endTime-startTime)+"ms");
+        
+        
+        EfficientMarkovModel eff = new EfficientMarkovModel(2);
+        startTime = System.currentTimeMillis();
+        runModel(eff, st, size, seed);
+        endTime = System.currentTimeMillis();
+        System.out.println(eff.toString()+" took "+(endTime-startTime)+"ms");
+
+    }
+    
+    public void runEfficientMarkov() {
+        FileResource fr = new FileResource();
+		String st = fr.asString();
+		//String st = "yes-this-is-a-thin-pretty-pink-thistle";
+		//st = st.replace('\n', ' ');
+		int size = 50;
+		int seed = 615;
+		
+		EfficientMarkovModel emm = new EfficientMarkovModel(5);
+		runModel(emm, st, size, seed);
+    }
+    
     public void runMarkov() {
         FileResource fr = new FileResource();
 		String st = fr.asString();
