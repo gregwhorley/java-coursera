@@ -42,7 +42,6 @@ public class MarkovWordOne implements IMarkovModel {
 			sb.append(" ");
 			key = next;
 		}
-		
 		return sb.toString().trim();
 	}
 	
@@ -80,12 +79,11 @@ public class MarkovWordOne implements IMarkovModel {
            if (foundKey == -1) {
                break;
             }
-           if (foundKey+key.length() >= myText.length) {
+           if (foundKey+key.length() >= myText.length-1) {
                break;
             }
            String next = myText[foundKey+1];
            follows.add(next);
-           //placeHolder = foundKey + key.length();
            placeHolder = foundKey + 1;
         }
         return follows;

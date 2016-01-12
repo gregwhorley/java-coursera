@@ -29,14 +29,14 @@ public class MarkovRunner {
     }
     
     public void runMarkov() { 
-        //FileResource fr = new FileResource(); 
-        //String st = fr.asString(); 
-        //st = st.replace('\n', ' ');
-        String st = "this is just a test yes this is a simple test";
+        FileResource fr = new FileResource(); 
+        String st = fr.asString(); 
+        //String st = "this is just a test yes this is a simple test";
+        st = st.replace('\n', ' ');
         //MarkovWordOne markovWord = new MarkovWordOne(); 
         MarkovWordTwo markovWord = new MarkovWordTwo();
-        //runModel(markovWord, st, 120, 175); 
-        runModel(markovWord, st, 200);
+        runModel(markovWord, st, 120, 832); 
+        //runModel(markovWord, st, 200, 25);
     } 
 
     private void printOut(String s){

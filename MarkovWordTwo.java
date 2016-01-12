@@ -25,13 +25,16 @@ public class MarkovWordTwo implements IMarkovModel {
 	
 	public String getRandomText(int numWords){
 		StringBuilder sb = new StringBuilder();
-		int index = myRandom.nextInt(myText.length-1);  // random word to start with
-		String twoWordKey = myText[index]+" "+myText[index+1];
-		sb.append(twoWordKey);
+		int index = myRandom.nextInt(myText.length-2);  // random word to start with
+		String key1 = myText[index];
+		String key2 = myText[index+1];
+		sb.append(key1);
+		sb.append(" ");
+		sb.append(key2);
 		sb.append(" ");
 		for(int k=0; k < numWords-1; k++){
-		    ArrayList<String> follows = getFollows(twoWordKey);
-		    System.out.println("Key: "+twoWordKey+"\tValue: "+follows);
+		    ArrayList<String> follows = getFollows(key1,key2);
+		    System.out.println("Keys: "+key1+" "+key2+"\tValue: "+follows);
 		    if (follows.size() == 0) {
 		        break;
 		    }
@@ -39,53 +42,35 @@ public class MarkovWordTwo implements IMarkovModel {
 			String next = follows.get(index);
 			sb.append(next);
 			sb.append(" ");
-			twoWordKey = twoWordKey.substring(1)+" "+next;
+			key1 = key2;
+			key2 = next;
 		}
-		
 		return sb.toString().trim();
 	}
 	
-	private int indexOf(String[] words, String target, int start) {
-	    for (int index=start;index<words.length;index++) {
-	        if (words[index].equals(target)) {
+	private int indexOf(String[] words, String target1, String target2, int start) {
+	    for (int index=start;index<words.length-1;index++) {
+	        if (words[index].equals(target1) && words[index+1].equals(target2)) {
 	            return index;
 	        }
 	    }
 	    return -1;
 	}
 	
-	public void testIndexOf() {
-	    String text = "this is just a test yes this is a simple test";
-	    String[] textArray = text.split("\\s");
-	    int indexOfThis = indexOf(textArray,"this",0);
-	    System.out.println(indexOfThis);
-	    indexOfThis = indexOf(textArray,"this",3);
-	    System.out.println(indexOfThis);
-	    int indexOfFrog = indexOf(textArray,"frog",0);
-	    System.out.println(indexOfFrog);
-	    indexOfFrog = indexOf(textArray,"frog",5);
-	    System.out.println(indexOfFrog);
-	    int indexOfSimple = indexOf(textArray,"simple",2);
-	    System.out.println(indexOfSimple);
-	    int indexOfTest = indexOf(textArray,"test",5);
-	    System.out.println(indexOfTest);
-	}
-	
-	private ArrayList<String> getFollows(String key) {
+	private ArrayList<String> getFollows(String key1, String key2) {
 	    ArrayList<String> follows = new ArrayList<String>();
         int placeHolder = 0;
         while (placeHolder < myText.length) {
-            int foundKey = indexOf(myText, key, placeHolder);
+           int foundKey = indexOf(myText, key1, key2, placeHolder);
            if (foundKey == -1) {
                break;
             }
-           if (foundKey+key.length() >= myText.length) {
+           if (foundKey+2 >= myText.length) {
                break;
             }
-           String next = myText[foundKey+1];
+           String next = myText[foundKey+2];
            follows.add(next);
-           //placeHolder = foundKey + key.length();
-           placeHolder = foundKey + 1;
+           placeHolder = foundKey + 2;
         }
         return follows;
     }
