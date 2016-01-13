@@ -30,4 +30,11 @@ public class WordGramTester {
 		}
 	}
 	
+	public void testShiftAdd() {
+	    String source = "this is a test";
+	    String[] words = source.split("\\s+");
+	    WordGram shiftGram = new WordGram(words,0,words.length).shiftAdd("yes");
+	    System.out.println(shiftGram);
+	}
+	
 }
