@@ -22,76 +22,94 @@ public class MarkovWord implements IMarkovModel {
     }
     
     public void setTraining(String text){
-		myText = text.split("\\s+");
-	}
-	
-	public String getRandomText(int numWords){
-		StringBuilder sb = new StringBuilder();
-		int index = myRandom.nextInt(myText.length-1);  // random word to start with
-		String key = myText[index];
-		sb.append(key);
-		sb.append(" ");
-		for(int k=0; k < numWords-1; k++){
-		    ArrayList<String> follows = getFollows(key);
-		    //System.out.println("Key: "+key+"\tValue: "+follows);
-		    if (follows.size() == 0) {
-		        break;
-		    }
-			index = myRandom.nextInt(follows.size());
-			String next = follows.get(index);
-			sb.append(next);
-			sb.append(" ");
-			key = next;
-		}
-		return sb.toString().trim();
-	}
-	
-	private int indexOf(String[] words, WordGram target, int start) {
-	    for (int index=start;index<words.length-target.length();index++) {
-	        if (words[index].equals(target.wordAt(0))) {
-	            boolean targetFound = true;
-	            for (int k=1;k<target.length();k++) {
-	                if (!words[k].equals(target.wordAt(k))) {
-	                    targetFound = false;
-	                    break;
-	                }
-	            }
-	            if (targetFound) {
-	                return index;
-	            }
-	        }
-	    }
-	    return -1;
-	}
-	
-	public void testIndexOf() {
-	    String text = "this is just a test yes this is a simple test";
-	    String[] textArray = text.split("\\s");
-	    String[] targetArray = "this is".split("\\s");
-	    WordGram target = new WordGram(targetArray,0,targetArray.length);
-	    System.out.println(indexOf(textArray,target,0));
-	    System.out.println(indexOf(textArray,target,5));
-	    System.out.println(indexOf(textArray,target,8));
-	    
-	}
-	
-	private ArrayList<String> getFollows(String key) {
-	    ArrayList<String> follows = new ArrayList<String>();
-        int placeHolder = 0;
-        while (placeHolder < myText.length) {
-            //int foundKey = indexOf(myText, key, placeHolder);
-           int foundKey = 0;
+        myText = text.split("\\s+");
+    }
+    
+    public String getRandomText(int numWords){
+        StringBuilder sb = new StringBuilder();
+        int index = myRandom.nextInt(myText.length-1);  // random word to start with
+        WordGram kGram = new WordGram(myText,index,myOrder);
+        sb.append(kGram.toString()).append(" ");
+        //System.out.println("Contents of kGram: "+kGram.toString());
+        for(int k=0; k < numWords-1; k++){
+            ArrayList<String> follows = getFollows(kGram);
+            //System.out.println("Contents of follows: "+follows);
+            //System.out.println("Key: "+kGram.toString()+"\tValue: "+follows);
+            if (follows.size() == 0) {
+                break;
+            }
+            index = myRandom.nextInt(follows.size());
+            String next = follows.get(index);
+            sb.append(next).append(" ");
+            kGram = kGram.shiftAdd(next);
+        }
+        return sb.toString().trim();
+    }
+    
+    private int indexOf(String[] words, WordGram target, int start) {
+        for (int index=start;index<words.length-target.length();index++) {
+            //System.out.println("Contents of target: "+target.toString());
+            //System.out.println("target.wordAt(0) "+target.wordAt(0));
+            //System.out.println("word at index: "+index+" "+words[index]);
+            if (words[index].equals(target.wordAt(0))) {
+                boolean targetFound = true;
+                for (int k=1;k<target.length();k++) {
+                    //System.out.println("word at index: "+(index+k)+" "+target.wordAt(k));
+                    if (!words[index+k].equals(target.wordAt(k))) {
+                        targetFound = false;
+                        break;
+                    }
+                }
+                if (targetFound) {
+                    return index;
+                }
+            }
+        }
+        return -1;
+    }
+    
+    private ArrayList<String> getFollows(WordGram kGram) {
+        ArrayList<String> follows = new ArrayList<String>();
+        int counter = 0;
+        while (counter < myText.length-kGram.length()) {
+           int foundKey = indexOf(myText, kGram, counter);
            if (foundKey == -1) {
                break;
             }
-           if (foundKey+key.length() >= myText.length-1) {
+           if (foundKey+kGram.length() >= myText.length-1) {
                break;
             }
-           String next = myText[foundKey+1];
+           String next = myText[foundKey+kGram.length()];
            follows.add(next);
-           placeHolder = foundKey + 1;
+           counter = foundKey + kGram.length();
         }
         return follows;
+    }
+    
+    public void testGetRandomText() {
+        myText = "this is just a test yes this is a simple test i repeat this is a test just a test.".split("\\s");
+        String randomText = getRandomText(100);
+        for (int i=0;i<myText.length;i++) {
+            //System.out.println(myText[i]);
+        }
+        System.out.println(randomText);
+    }
+    
+    public void testGetFollows() {
+        myText = "this is just a test yes this is a simple test".split("\\s");
+        String[] targetArray = "this".split("\\s");
+        WordGram target = new WordGram(targetArray,0,targetArray.length);
+        ArrayList<String> follows = getFollows(target);
+        System.out.println(follows);
+    }
+    
+    public void testIndexOf() {
+        String[] textArray = "this is just a test yes this is a simple test".split("\\s");
+        String[] targetArray = "this is".split("\\s");
+        WordGram target = new WordGram(targetArray,0,targetArray.length);
+        System.out.println(indexOf(textArray,target,0));
+        System.out.println(indexOf(textArray,target,5));
+        System.out.println(indexOf(textArray,target,8));
     }
 
 }

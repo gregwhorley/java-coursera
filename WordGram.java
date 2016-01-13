@@ -45,9 +45,9 @@ public class WordGram {
         // shift all words one towards 0 and add word at the end. 
         // you lose the first word
         // This method should not alter the WordGram on which it is called.
-        String[] shiftedWords = new String[myWords.length];
-        for (int index=0;index<myWords.length-1;index++) {
-            shiftedWords[index] = myWords[index+1];
+        String[] shiftedWords = new String[out.length()];
+        for (int index=0;index<out.length()-1;index++) {
+            shiftedWords[index] = out.wordAt(index+1);
         }
         shiftedWords[shiftedWords.length-1] = word;
         return new WordGram(shiftedWords,0,shiftedWords.length);
