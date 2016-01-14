@@ -6,10 +6,14 @@ public class WordGram {
     public WordGram(String[] source, int start, int size) {
         myWords = new String[size];
         System.arraycopy(source, start, myWords, 0, size);
+        myHash = 0;
     }
     
     public int hashCode() {
-        return myWords.toString().hashCode();
+        if (myHash == 0) {
+            myHash = this.toString().hashCode();
+        }
+        return myHash;
     }
 
     public String wordAt(int index) {
@@ -46,9 +50,6 @@ public class WordGram {
 
     public WordGram shiftAdd(String word) { 
         WordGram out = new WordGram(myWords, 0, myWords.length);
-        // shift all words one towards 0 and add word at the end. 
-        // you lose the first word
-        // This method should not alter the WordGram on which it is called.
         String[] shiftedWords = new String[out.length()];
         for (int index=0;index<out.length()-1;index++) {
             shiftedWords[index] = out.wordAt(index+1);

@@ -24,19 +24,61 @@ public class EfficientMarkovWord implements IMarkovModel {
     
     public void setTraining(String text) {
         myText = text.split("\\s+");
-        myMap = buildMap();
+    }
+    
+    public void printHashMapInfo() {
+        int largest = 0;
+        //print the hashmap
+        for (WordGram wordGram : myMap.keySet()) {
+            //System.out.println("Key: "+wordGram+"\tValue: "+myMap.get(wordGram));
+            if (myMap.get(wordGram).size() > largest) {
+                largest = myMap.get(wordGram).size();
+            }
+        }
+        //print the number of keys in the hashmap
+        System.out.println("Number of keys in hashmap: "+myMap.size());
+        //print the size of the largest value in the hashmap
+        System.out.println("Size of largest value in hashmap: "+largest);
+        //print the keys that have the maximum value
+        System.out.println("Keys that have maximum value: ");
+        for (WordGram wordGram : myMap.keySet()) {
+            if (myMap.get(wordGram).size() == largest) {
+                System.out.println(wordGram.toString());
+            }
+        }
     }
     
     private HashMap<WordGram,ArrayList<String>> buildMap() {
-        /*
-         * a method named buildMap to build the HashMap (Be sure to handle the 
-         * case at the end where there is not a follow character. If that WordGram
-         * is not in the HashMap yet, then it should be put in mapped to an empty
-         * ArrayList. If that key is already in the HashMap, then do not enter
-         * anything for this case.)
-         */
         HashMap<WordGram,ArrayList<String>> mappedWords = new HashMap<WordGram,
                     ArrayList<String>>();
+        int counter = 0;
+        //while the current location of the myText array is less than the array's length minus the order
+        while (counter < myText.length-(myOrder-1)) {
+            //create a new wordgram object that starts at the current location of myText string array
+            //  with a length of myOrder
+            WordGram wordGram = new WordGram(myText,counter,myOrder);
+            
+            //if the wordgram string array, acting as the key in the hashmap, is not in the hashmap
+            if (!mappedWords.containsKey(wordGram) && counter+myOrder < myText.length) {
+                //add new entry in hashmap with key of wordgram and value of word that follows
+                mappedWords.put(wordGram, new ArrayList<String>(Arrays.asList(myText[counter+myOrder])));
+                //System.out.println("Word that follows wordgram: "+myText[counter+myOrder]);
+            }
+            //if the wordgram string array is already in the hashmap
+            else if (mappedWords.containsKey(wordGram) && counter+myOrder < myText.length) {
+                //get entry and replace it with current value + value of word that follows
+                ArrayList<String> currentValues = mappedWords.get(wordGram);
+                currentValues.add(myText[counter+myOrder]);
+                mappedWords.replace(wordGram,currentValues);
+                //System.out.println("Words in wordgram: "+currentValues);
+            }
+            //if the wordgram string array is not in the hashmap and we're at the end of the myText array
+            else if (!mappedWords.containsKey(wordGram) && counter + myOrder == myText.length) {
+                //create new entry with key of wordgram and empty value set
+                mappedWords.put(wordGram, new ArrayList<String>());
+            }
+            counter++;
+        }
         return mappedWords;
     }
     
@@ -59,28 +101,12 @@ public class EfficientMarkovWord implements IMarkovModel {
     }
     
     private ArrayList<String> getFollows(WordGram kGram) {
-        /*
-         * this getFollows method should be much shorter, as it can look up
-         * the WordGram, instead of computing it each time.
-         */
-        ArrayList<String> follows = new ArrayList<String>();
-        int counter = 0;
-        while (counter < myText.length-kGram.length()) {
-           int foundKey = indexOf(myText, kGram, counter);
-           if (foundKey == -1) {
-               break;
-            }
-           if (foundKey+kGram.length() >= myText.length-1) {
-               break;
-            }
-           String next = myText[foundKey+kGram.length()];
-           follows.add(next);
-           counter = foundKey + kGram.length();
-        }
-        return follows;
+        return myMap.get(kGram);
     }
     
     public String getRandomText(int numWords){
+        myMap = buildMap();
+        printHashMapInfo();
         StringBuilder sb = new StringBuilder();
         int index = myRandom.nextInt(myText.length-myOrder);  // random word to start with
         WordGram kGram = new WordGram(myText,index,myOrder);
