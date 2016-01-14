@@ -27,14 +27,11 @@ public class MarkovWord implements IMarkovModel {
     
     public String getRandomText(int numWords){
         StringBuilder sb = new StringBuilder();
-        int index = myRandom.nextInt(myText.length-1);  // random word to start with
+        int index = myRandom.nextInt(myText.length-myOrder);  // random word to start with
         WordGram kGram = new WordGram(myText,index,myOrder);
         sb.append(kGram.toString()).append(" ");
-        //System.out.println("Contents of kGram: "+kGram.toString());
         for(int k=0; k < numWords-1; k++){
             ArrayList<String> follows = getFollows(kGram);
-            //System.out.println("Contents of follows: "+follows);
-            //System.out.println("Key: "+kGram.toString()+"\tValue: "+follows);
             if (follows.size() == 0) {
                 break;
             }
@@ -48,13 +45,9 @@ public class MarkovWord implements IMarkovModel {
     
     private int indexOf(String[] words, WordGram target, int start) {
         for (int index=start;index<words.length-target.length();index++) {
-            //System.out.println("Contents of target: "+target.toString());
-            //System.out.println("target.wordAt(0) "+target.wordAt(0));
-            //System.out.println("word at index: "+index+" "+words[index]);
             if (words[index].equals(target.wordAt(0))) {
                 boolean targetFound = true;
                 for (int k=1;k<target.length();k++) {
-                    //System.out.println("word at index: "+(index+k)+" "+target.wordAt(k));
                     if (!words[index+k].equals(target.wordAt(k))) {
                         targetFound = false;
                         break;

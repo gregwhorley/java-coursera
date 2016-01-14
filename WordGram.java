@@ -7,6 +7,10 @@ public class WordGram {
         myWords = new String[size];
         System.arraycopy(source, start, myWords, 0, size);
     }
+    
+    public int hashCode() {
+        return myWords.toString().hashCode();
+    }
 
     public String wordAt(int index) {
         if (index < 0 || index >= myWords.length) {
