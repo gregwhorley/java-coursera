@@ -18,6 +18,7 @@ public class EfficientMarkovModel extends AbstractMarkovModel {
     
     public void setTraining(String s){
         myText = s;
+        markovMap = buildMap();
     }
 
     private HashMap<String,ArrayList<String>> buildMap() {
@@ -71,7 +72,6 @@ public class EfficientMarkovModel extends AbstractMarkovModel {
     }
     
     public String getRandomText(int numChars){
-        markovMap = buildMap();
         printHashMapInfo();
         StringBuilder sb = new StringBuilder();
         int index = myRandom.nextInt(myText.length()-(order+1));
