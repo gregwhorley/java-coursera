@@ -1,5 +1,5 @@
 # java-coursera
-Stuff from Coursera's "Java Programming: An Introduction To Java" specialization classes.
+Stuff from Coursera's "Java Programming: An Introduction To Java" specialization classes. See the wiki for info on the seven step process of solving programming problems and the general workflow for fixing bugs.
 
 Links to docs that I frequently reference while doing assignments:
 * http://developer.android.com/reference/android/location/Location.html
